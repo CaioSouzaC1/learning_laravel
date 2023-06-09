@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Serie;
 use Illuminate\Http\Request;
 
 class SeriesController extends Controller
@@ -14,8 +15,26 @@ class SeriesController extends Controller
 
         // return redirect("https://google.com");
 
-        return view("SeriesIndex", [
-            'series' => ["Naruto", "HXH", "DBZ"]
+        $series = Serie::all();
+
+        return view("series.index", [
+            'series' => $series
         ]);
+    }
+
+    public function create()
+    {
+        return view("series.create");
+    }
+
+    public function store(Request $request)
+    {
+
+        $serieName = $request->get("name");
+        $serie = new Serie();
+        $serie->name = $serieName;
+        $serie->save();
+
+        redirect('/series');
     }
 }
