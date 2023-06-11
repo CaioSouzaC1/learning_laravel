@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SeriesFormRequest;
 use App\Models\Serie;
 use Illuminate\Http\Request;
 
@@ -30,22 +31,15 @@ class SeriesController extends Controller
     {
         $request->session()->put("success.msg", "Serie added successfully");
 
-
         return view("series.create");
     }
 
     public function store(Request $request)
     {
 
-        // $serieName = $request->get("name");
-        // $serie = new Serie();
-        // $serie->name = $serieName;
-        // $serie->save();
-
         $serie = Serie::create($request->all());
 
         $request->session()->put("success.msg", "Serie {$serie->name} was added successfully");
-
 
         return redirect('/series');
     }
