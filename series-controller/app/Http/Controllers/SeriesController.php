@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SeriesFormRequest;
 use App\Models\Serie;
+use App\Repository\seriesRepository;
 use Illuminate\Http\Request;
 
 class SeriesController extends Controller
 {
+
+    public function __construct(private seriesRepository $seriesRepository)
+    {
+    }
+
+
     public function index(Request $request)
     {
 
@@ -29,6 +35,7 @@ class SeriesController extends Controller
 
     public function create(Request $request)
     {
+
         $request->session()->put("success.msg", "Serie added successfully");
 
         return view("series.create");
@@ -37,7 +44,8 @@ class SeriesController extends Controller
     public function store(Request $request)
     {
 
-        $serie = Serie::create($request->all());
+
+        $serie = $this->seriesRepository->add($request);
 
         $request->session()->put("success.msg", "Serie {$serie->name} was added successfully");
 
