@@ -19,4 +19,9 @@ class Season extends Model
     {
         return $this->hasMany(Episodes::class);
     }
+
+    public function watcheds(): int
+    {
+        return $this->episodes()->where("watched", true)->count();
+    }
 }

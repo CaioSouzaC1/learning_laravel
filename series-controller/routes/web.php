@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\EpisodesController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SeasonsController;
 use App\Http\Controllers\SeriesController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\Authenticator;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,14 +20,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // return view('welcome');
-
     return redirect("/series");
 });
 
 
 Route::controller(SeriesController::class)->group(function () {
-    Route::get('/series', "index");
+    Route::get('/series', "index")->name("series.index");
     Route::get('/series/create', "create");
     Route::post('/series/save', "store");
     Route::delete('/series/destroy/{id}', "destroy")->name("series.destroy");
@@ -34,4 +36,24 @@ Route::controller(SeriesController::class)->group(function () {
 
 Route::controller(SeasonsController::class)->group(function () {
     Route::get('/seasons/{series}/seasons', "index")->name("seasons.index");
+});
+
+
+Route::controller(EpisodesController::class)->group(function () {
+    Route::get('/seasons/{season}/episodes', "index")->name("episodes.index");
+    Route::post('/seasons/{season}/episodes', "update")->name("episodes.update");
+});
+
+
+Route::controller(LoginController::class)->group(function () {
+    Route::get('/login', "index")->name("login");
+    Route::post('/login', "store")->name("login.store");
+    Route::get('/logout', "destroy")->name("login.destroy");
+});
+
+
+Route::controller(UserController::class)->group(function () {
+    // Route::get('/user', "index")->name("user.index");
+    Route::get('/user', "create")->name("user.create");
+    Route::post('/user', "store")->name("user.store");
 });

@@ -11,6 +11,19 @@
 
 <body>
     <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+            <a class="navbar-brand" href="{{route('series.index')}}">Home</a>
+
+            @auth
+            <a class="navbar-brand" href="{{route('login.destroy')}}">Logout</a>
+            @endauth
+            @guest
+            <a class="navbar-brand" href="{{route('login')}}">Entrar</a>
+            @endguest
+        </nav>
+
+       
     <h1>{{$title}}</h1>
     
     @if($errors->any())

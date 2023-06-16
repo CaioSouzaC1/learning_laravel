@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\Authenticator;
 use App\Models\Serie;
 use App\Repository\seriesRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SeriesController extends Controller
 {
 
     public function __construct(private seriesRepository $seriesRepository)
     {
+        $this->middleware(Authenticator::class);
     }
 
 
@@ -21,6 +24,8 @@ class SeriesController extends Controller
         // return $request->get("id");
 
         // return redirect("https://google.com");
+
+        Auth::check();
 
         $series = Serie::all();
 
