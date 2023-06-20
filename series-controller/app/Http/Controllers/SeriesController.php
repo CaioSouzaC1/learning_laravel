@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticator;
+use App\Mail\SeriesCreated;
 use App\Models\Serie;
 use App\Repository\seriesRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class SeriesController extends Controller
 {
@@ -48,11 +50,13 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {
-
-
         $serie = $this->seriesRepository->add($request);
 
         $request->session()->put("success.msg", "Serie {$serie->name} was added successfully");
+
+        $email = new SeriesCreated($serie->name);
+
+        Mail::to($request->user())->send($email);
 
         return redirect('/series');
     }
