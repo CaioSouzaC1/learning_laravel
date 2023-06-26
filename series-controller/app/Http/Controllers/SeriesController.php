@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SeriesCreated as EventsSeriesCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticator;
 use App\Mail\SeriesCreated;
 use App\Models\Serie;
+use App\Models\User;
 use App\Repository\seriesRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +44,6 @@ class SeriesController extends Controller
 
     public function create(Request $request)
     {
-
         $request->session()->put("success.msg", "Serie added successfully");
 
         return view("series.create");
@@ -50,13 +51,18 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {
+
+        // dd($request->file("cover"));
+
+        $cover_path = $request->file("cover") ? $request->file("cover")->store("series_covers", ["disk" => "public"]) : null;
+
+        $request->merge(["cover_path" => $cover_path]);
+
         $serie = $this->seriesRepository->add($request);
 
         $request->session()->put("success.msg", "Serie {$serie->name} was added successfully");
 
-        $email = new SeriesCreated($serie->name);
-
-        Mail::to($request->user())->send($email);
+        EventsSeriesCreated::dispatch($serie->name);
 
         return redirect('/series');
     }
