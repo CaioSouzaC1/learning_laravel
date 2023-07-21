@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Serie;
 use Illuminate\Http\Request;
 
 class ApiController extends Controller
@@ -24,6 +25,24 @@ class ApiController extends Controller
     public function show(int $id)
     {
 
-        return Series::whereID($id)->with("seasons.episodes")->first();
+        return Serie::whereID($id)->with("seasons.episodes")->first();
+    }
+
+    public function update(int $id, Request $request)
+    {
+
+        $serie = Serie::find($id);
+
+        $serie->fill($request->all());
+
+        $serie->save();
+
+        return $serie;
+    }
+
+    public function destroy($id)
+    {
+        Serie::destroy($id);
+        return response()->noContent();
     }
 }
